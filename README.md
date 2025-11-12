@@ -3,7 +3,7 @@
 Projeto acadêmico de um sistema de gerenciamento de biblioteca, utilizando Servlets, JSP e JDBC com o padrão MVC.
 
 ## Tecnologias
-* Java 11
+* Java 21
 * Servlets
 * JSP (JavaServer Pages) + JSTL
 * JDBC (com driver MySQL)
