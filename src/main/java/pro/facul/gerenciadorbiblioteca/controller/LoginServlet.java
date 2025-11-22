@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogado", usuario);
 
-            response.sendRedirect(request.getContextPath() + "/admin/livros.jsp");
+            response.sendRedirect(request.getContextPath() + "/livros");
 
         } else {
 
