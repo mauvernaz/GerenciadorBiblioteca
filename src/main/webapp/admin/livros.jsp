@@ -4,16 +4,29 @@
 <head>
     <title>Gerenciar Livros</title>
     <style>
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px;}
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
+        .btn { padding: 5px 10px; text-decoration: none; background: #ddd; border: 1px solid #ccc; color: black; border-radius: 3px;}
+        .btn:hover { background: #ccc; }
+
+        /* Estilos de navegação simples */
+        nav a { text-decoration: none; color: blue; }
+        nav b { color: black; }
     </style>
 </head>
 <body>
 <h1>Gerenciamento de Livros</h1>
 
+<nav>
+    <b>📚 Livros</b> |
+    <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a> |
+    <a href="${pageContext.request.contextPath}/login.jsp">Sair</a>
+</nav>
+<hr>
+
 <p>
-    <a href="livros?acao=novo">➕ Adicionar Novo Livro</a>
+    <a href="livros?acao=novo" class="btn">➕ Cadastrar Novo Livro</a>
 </p>
 
 <table>
@@ -39,7 +52,8 @@
                 <a href="livros?acao=editar&id=${livro.id}">Editar</a>
                 &nbsp;|&nbsp;
                 <a href="livros?acao=deletar&id=${livro.id}"
-                   onclick="return confirm('Tem certeza que deseja excluir este livro?');">
+                   onclick="return confirm('Tem certeza que deseja excluir o livro ${livro.titulo}?');"
+                   style="color: red;">
                     Excluir
                 </a>
             </td>
@@ -47,8 +61,5 @@
     </c:forEach>
     </tbody>
 </table>
-
-<br>
-<a href="${pageContext.request.contextPath}/login.jsp">Sair (Voltar ao Login)</a>
 </body>
 </html>
