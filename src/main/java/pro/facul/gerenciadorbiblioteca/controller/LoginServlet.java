@@ -36,6 +36,8 @@ public class LoginServlet extends HttpServlet {
 
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogado", usuario);
+            session.setAttribute("tipoUsuario", usuario.getTipo());
+            session.setAttribute("idUsuario", usuario.getId());
 
             response.sendRedirect(request.getContextPath() + "/livros");
 

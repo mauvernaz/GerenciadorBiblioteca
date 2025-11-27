@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="usuario" value="${sessionScope.usuarioLogado}" />
 <html>
 <head>
     <title>Gerenciar Livros</title>
@@ -10,7 +11,6 @@
         .btn { padding: 5px 10px; text-decoration: none; background: #ddd; border: 1px solid #ccc; color: black; border-radius: 3px;}
         .btn:hover { background: #ccc; }
 
-        /* Estilos de navegação simples */
         nav a { text-decoration: none; color: blue; }
         nav b { color: black; }
     </style>
@@ -20,14 +20,20 @@
 
 <nav>
     <b>📚 Livros</b> |
+
+    <c:if test="${usuario.tipo =='ADMIN'}">
     <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a> |
-    <a href="${pageContext.request.contextPath}/login.jsp">Sair</a>
+    </c:if>
+
+    <a href="${pageContext.request.contextPath}/logout">Sair</a> |
 </nav>
 <hr>
 
+<c:if test="${usuario.tipo == 'ADMIN'}">
 <p>
     <a href="livros?acao=novo" class="btn">➕ Cadastrar Novo Livro</a>
 </p>
+</c:if>
 
 <table>
     <thead>
@@ -49,13 +55,19 @@
             <td>${livro.isbn}</td>
             <td>${livro.quantidadeDisponivel}</td>
             <td>
-                <a href="livros?acao=editar&id=${livro.id}">Editar</a>
-                &nbsp;|&nbsp;
-                <a href="livros?acao=deletar&id=${livro.id}"
-                   onclick="return confirm('Tem certeza que deseja excluir o livro ${livro.titulo}?');"
-                   style="color: red;">
-                    Excluir
-                </a>
+                <c:if test="${usuario.tipo == 'ADMIN'}">
+                    <a href="livros?acao=editar&id=${livro.id}">Editar</a>
+                    &nbsp;|&nbsp;
+                    <a href="livros?acao=deletar&id=${livro.id}"
+                       onclick="return confirm('Tem certeza que deseja excluir o livro ${livro.titulo}?');"
+                       style="color: red;">
+                        Excluir
+                    </a>
+                </c:if>
+
+                <c:if test="${usuario.tipo != 'ADMIN'}">
+                    (Sem permissões)
+                </c:if>
             </td>
         </tr>
     </c:forEach>

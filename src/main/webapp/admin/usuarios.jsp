@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="usuario" value="${sessionScope.usuarioLogado}" />
+
 <html>
 <head>
     <title>Gerenciar Usuários</title>
@@ -16,14 +18,20 @@
 
 <nav>
     <a href="${pageContext.request.contextPath}/livros">📚 Livros</a> |
+
+    <c:if test="${usuario.tipo == 'ADMIN'}">
     <b>👥 Usuários</b> |
-    <a href="${pageContext.request.contextPath}/login.jsp">Sair</a>
+    </c:if>
+
+    <a href="${pageContext.request.contextPath}/logout">Sair</a>
 </nav>
 <hr>
 
+<c:if test="${usuario.tipo == 'ADMIN'}">
 <p>
     <a href="usuarios?acao=novo" class="btn">➕ Cadastrar Novo Usuário</a>
 </p>
+</c:if>
 
 <table>
     <thead>
@@ -41,17 +49,19 @@
             <td>${u.nome}</td>
             <td>${u.email}</td>
             <td>
-                <c:if test="${u.tipo == 'ADMIN'}"><strong>ADMIN</strong></c:if>
-                <c:if test="${u.tipo != 'ADMIN'}">ALUNO</c:if>
-            </td>
-            <td>
-                <a href="usuarios?acao=editar&id=${u.id}">Editar</a>
-                &nbsp;|&nbsp;
-                <a href="usuarios?acao=deletar&id=${u.id}"
-                   onclick="return confirm('Tem certeza que deseja excluir ${u.nome}?');"
-                   style="color: red;">
-                    Excluir
-                </a>
+                <c:if test="${usuario.tipo == 'ADMIN'}">
+                    <a href="usuarios?acao=editar&id=${u.id}">Editar</a>
+                    &nbsp;|&nbsp;
+                    <a href="usuarios?acao=deletar&id=${u.id}"
+                       onclick="return confirm('Tem certeza que deseja excluir ${u.nome}?');"
+                       style="color: red;">
+                        Excluir
+                    </a>
+                </c:if>
+
+                <c:if test="${usuario.tipo != 'ADMIN'}">
+                    (Sem permissões)
+                </c:if>
             </td>
         </tr>
     </c:forEach>
