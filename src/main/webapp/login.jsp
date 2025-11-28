@@ -4,32 +4,33 @@
 <html>
 <head>
     <title>Login - Gerenciador de Biblioteca</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="center-screen"> <div class="login-card"> <h2>📚 Biblioteca</h2>
+    <p style="margin-bottom: 20px; color: #666;">Entre com suas credenciais</p>
 
-<h2>Login do Sistema</h2>
+    <form action="login" method="post">
 
-<form action="login" method="post">
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
-    </div>
-    <div>
-        <label for="senha">Senha:</label>
-        <input type="password" id="senha" name="senha">
-    </div>
-    <div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="ex: admin@biblioteca.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
+        </div>
+
         <button type="submit">Entrar</button>
-    </div>
-</form>
+    </form>
 
-<br>
+    <c:if test="${not empty erroLogin}">
+        <div class="error-msg">
+            <c:out value="${erroLogin}" />
+        </div>
+    </c:if>
 
-<c:if test="${not empty erroLogin}">
-    <p style="color: red;">
-        <c:out value="${erroLogin}" />
-    </p>
-</c:if>
+</div>
 
 </body>
 </html>
