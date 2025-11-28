@@ -269,3 +269,22 @@ table tr:hover {
     color: white;
     border-radius: 4px;
 }
+
+
+/* --- Alinhamento --- */
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.col-mini {
+    width: 15%;
+    white-space: nowrap;
+}

@@ -11,15 +11,15 @@
 
 <nav>
     <a href="${pageContext.request.contextPath}/livros">📚 Livros</a> |
-    <b>📝 Empréstimos</b> | <c:if test="${usuario.tipo == 'ADMIN'}">
-    <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a>
-</c:if>
-
+    <b>📖 Empréstimos</b>
+    <c:if test="${usuario.tipo == 'ADMIN'}">
+        | <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a>
+        | <a href="${pageContext.request.contextPath}/emprestimos?action=relatorios">📊 Relatórios</a>
+    </c:if>
     <a href="${pageContext.request.contextPath}/logout" style="margin-left: auto; color: #dc3545;">Sair</a>
 </nav>
 
 <div class="main-container">
-
     <h1>Gerenciamento de Empréstimos</h1>
 
     <c:if test="${not empty mensagemSucesso}">
@@ -31,7 +31,6 @@
 
     <c:if test="${usuario.tipo == 'ADMIN'}">
         <h3 style="margin-top: 20px; color: #555;">➕ Novo Empréstimo</h3>
-
         <form action="${pageContext.request.contextPath}/emprestimos" method="post">
             <input type="hidden" name="action" value="criar"/>
 
@@ -39,37 +38,32 @@
                 <div class="form-group" style="flex: 2;">
                     <label>Usuário:</label>
                     <select name="usuarioId" required>
-                        <option value="">Selecione o Aluno...</option>
+                        <option value="">Selecione...</option>
                         <c:forEach var="u" items="${usuarios}">
                             <option value="${u.id}">${u.nome} (${u.email})</option>
                         </c:forEach>
                     </select>
                 </div>
-
                 <div class="form-group" style="flex: 2;">
                     <label>Livro:</label>
                     <select name="livroId" required>
-                        <option value="">Selecione o Livro...</option>
+                        <option value="">Selecione...</option>
                         <c:forEach var="l" items="${livrosDisponiveis}">
                             <option value="${l.id}">${l.titulo} - ${l.autor}</option>
                         </c:forEach>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Devolução Prevista:</label>
                     <input type="date" name="dataPrevista" required/>
                 </div>
-
                 <button type="submit">Registrar</button>
             </div>
         </form>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
     </c:if>
 
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-
     <h3>📂 Empréstimos em Aberto</h3>
-
     <c:if test="${empty emprestimosAbertos}">
         <p style="color: #777; font-style: italic;">Nenhum empréstimo pendente.</p>
     </c:if>
@@ -80,10 +74,10 @@
             <tr>
                 <th>Usuário</th>
                 <th>Livro</th>
-                <th>Data Saída</th>
+                <th>Saída</th>
                 <th>Previsto</th>
                 <th>Status</th>
-                <th>Multa Atual</th>
+                <th>Multa</th>
                 <th>Ações</th>
             </tr>
             </thead>
@@ -93,7 +87,7 @@
                     <td>${e.usuario.nome}</td>
                     <td>${e.livro.titulo}</td>
                     <td>${e.dataEmprestimo}</td>
-                    <td>${e.dataPrevista}</td>
+                    <td>${e.dataDevolucaoPrevista}</td>
                     <td>
                         <c:if test="${e.diasAtraso > 0}">
                             <span class="badge-atraso">${e.diasAtraso} dias atraso</span>
@@ -103,18 +97,14 @@
                         </c:if>
                     </td>
                     <td>
-                        <c:if test="${e.multa > 0}">
-                            <strong style="color: #dc3545;">R$ ${e.multa}</strong>
-                        </c:if>
+                        <c:if test="${e.multa > 0}"><strong style="color: #dc3545;">R$ ${e.multa}</strong></c:if>
                         <c:if test="${e.multa <= 0}">-</c:if>
                     </td>
                     <td>
                         <form style="display:inline;" action="${pageContext.request.contextPath}/emprestimos" method="post">
                             <input type="hidden" name="action" value="devolver"/>
                             <input type="hidden" name="emprestimoId" value="${e.id}"/>
-                            <button type="submit" class="btn" style="width: auto; padding: 5px 10px; font-size: 0.8rem;">
-                                ↩️ Devolver
-                            </button>
+                            <button type="submit" class="btn" style="width: auto; padding: 5px 10px; font-size: 0.8rem;">↩️ Devolver</button>
                         </form>
                     </td>
                 </tr>
@@ -126,7 +116,6 @@
     <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
     <h3>📜 Histórico Completo</h3>
-
     <form action="${pageContext.request.contextPath}/emprestimos" method="get">
         <input type="hidden" name="action" value="historico"/>
 
@@ -140,7 +129,6 @@
                     </c:forEach>
                 </select>
             </div>
-
             <div class="form-group">
                 <label>Livro:</label>
                 <select name="livroId">
@@ -150,17 +138,14 @@
                     </c:forEach>
                 </select>
             </div>
-
             <div class="form-group">
                 <label>De:</label>
                 <input type="date" name="dataInicio" value="${param.dataInicio}"/>
             </div>
-
             <div class="form-group">
                 <label>Até:</label>
                 <input type="date" name="dataFim" value="${param.dataFim}"/>
             </div>
-
             <button type="submit" style="background-color: #6c757d;">🔍 Filtrar</button>
         </div>
     </form>
@@ -172,8 +157,8 @@
                 <th>Usuário</th>
                 <th>Livro</th>
                 <th>Saída</th>
-                <th>Retorno Real</th>
-                <th>Multa Paga</th>
+                <th>Previsto</th>
+                <th>Devolução</th>
                 <th>Situação</th>
             </tr>
             </thead>
@@ -183,8 +168,8 @@
                     <td>${e.usuario.nome}</td>
                     <td>${e.livro.titulo}</td>
                     <td>${e.dataEmprestimo}</td>
+                    <td>${e.dataDevolucaoPrevista}</td>
                     <td>${e.dataDevolucaoReal}</td>
-                    <td>R$ ${e.multa}</td>
                     <td>
                         <c:choose>
                             <c:when test="${e.dataDevolucaoReal == null}">
@@ -204,7 +189,6 @@
     <c:if test="${empty historico and param.action == 'historico'}">
         <p style="padding: 10px; color: #777;">Nenhum histórico encontrado para este filtro.</p>
     </c:if>
-
 </div>
 
 </body>

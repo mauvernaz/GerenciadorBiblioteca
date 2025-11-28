@@ -11,22 +11,20 @@
 
 <nav>
     <b>📚 Livros</b> |
-    <a href="${pageContext.request.contextPath}/emprestimos">📝 Empréstimos</a>
-
-    <c:if test="${usuario.tipo =='ADMIN'}">
+    <a href="${pageContext.request.contextPath}/emprestimos">📖 Empréstimos</a>
+    <c:if test="${usuario.tipo == 'ADMIN'}">
         | <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a>
+        | <a href="${pageContext.request.contextPath}/emprestimos?action=relatorios">📊 Relatórios</a>
     </c:if>
-
     <a href="${pageContext.request.contextPath}/logout" style="margin-left: auto; color: #dc3545;">Sair</a>
 </nav>
 
 <div class="main-container">
-
     <h1>Gerenciamento de Livros</h1>
 
     <c:if test="${usuario.tipo == 'ADMIN'}">
         <p style="text-align: right;">
-            <a href="livros?acao=novo" class="btn">➕ Novo Livro</a>
+            <a href="livros?acao=novo" class="btn">➕ Cadastrar Novo Livro</a>
         </p>
     </c:if>
 
@@ -52,27 +50,18 @@
                 <td>
                     <c:if test="${usuario.tipo == 'ADMIN'}">
                         <a href="livros?acao=editar&id=${livro.id}" class="action-link edit-btn">Editar</a>
-
                         <a href="livros?acao=deletar&id=${livro.id}"
                            onclick="return confirm('Tem certeza que deseja excluir o livro ${livro.titulo}?');"
-                           class="action-link delete-btn">
-                            Excluir
-                        </a>
+                           class="action-link delete-btn">Excluir</a>
                     </c:if>
-
                     <c:if test="${usuario.tipo != 'ADMIN'}">
-                        <span style="color: #999; font-size: 0.85rem;">Apenas leitura</span>
+                        <span style="color: #999; font-size: 0.85rem;">Leitura</span>
                     </c:if>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
-
-    <c:if test="${empty listaLivros}">
-        <p style="padding: 20px; text-align: center; color: #777;">Nenhum livro cadastrado ainda.</p>
-    </c:if>
-
 </div>
 
 </body>
