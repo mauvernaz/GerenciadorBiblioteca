@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Gerenciar Livros</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
         table { width: 100%; border-collapse: collapse; margin-top: 20px;}
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
@@ -14,6 +15,8 @@
         nav a { text-decoration: none; color: blue; }
         nav b { color: black; }
     </style>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <h1>Gerenciamento de Livros</h1>

@@ -5,6 +5,8 @@
 <html>
 <head>
     <title>Gerenciamento de Empréstimos</title>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/style.css">
     <style>
         table { width: 100%; border-collapse: collapse; margin-top: 20px;}
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
