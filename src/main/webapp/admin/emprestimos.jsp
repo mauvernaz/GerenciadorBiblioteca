@@ -101,11 +101,21 @@
                         <c:if test="${e.multa <= 0}">-</c:if>
                     </td>
                     <td>
-                        <form style="display:inline;" action="${pageContext.request.contextPath}/emprestimos" method="post">
-                            <input type="hidden" name="action" value="devolver"/>
-                            <input type="hidden" name="emprestimoId" value="${e.id}"/>
-                            <button type="submit" class="btn" style="width: auto; padding: 5px 10px; font-size: 0.8rem;">↩️ Devolver</button>
-                        </form>
+                        <c:if test="${usuario.tipo == 'ADMIN'}">
+                            <form style="display:inline;" action="${pageContext.request.contextPath}/emprestimos" method="post">
+                                <input type="hidden" name="action" value="devolver"/>
+                                <input type="hidden" name="emprestimoId" value="${e.id}"/>
+                                <button type="submit" class="btn" style="width: auto; padding: 5px 10px; font-size: 0.8rem;">
+                                    ↩️ Devolver
+                                </button>
+                            </form>
+                        </c:if>
+
+                        <c:if test="${usuario.tipo != 'ADMIN'}">
+        <span style="color: #777; font-size: 0.85rem; font-style: italic;">
+            Devolução presencial
+        </span>
+                        </c:if>
                     </td>
                 </tr>
             </c:forEach>
