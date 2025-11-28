@@ -18,10 +18,11 @@
 
 <nav>
     <a href="${pageContext.request.contextPath}/livros">📚 Livros</a> |
-<a href="${pageContext.request.contextPath}/emprestimos">📝 Empréstimos</a>
+    <a href="${pageContext.request.contextPath}/emprestimos">📖 Empréstimos</a> |
 
     <c:if test="${usuario.tipo == 'ADMIN'}">
-    <b>👥 Usuários</b> |
+        <b>👥 Usuários</b> |
+        <a href="${pageContext.request.contextPath}/emprestimos?action=relatorios">📊 Relatórios</a> |
     </c:if>
 
     <a href="${pageContext.request.contextPath}/logout">Sair</a>

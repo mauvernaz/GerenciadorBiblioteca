@@ -19,14 +19,16 @@
 <h1>Gerenciamento de Livros</h1>
 
 <nav>
+<nav>
     <b>📚 Livros</b> |
-<a href="${pageContext.request.contextPath}/emprestimos">📝 Empréstimos</a>
+    <a href="${pageContext.request.contextPath}/emprestimos">📖 Empréstimos</a> |
 
-    <c:if test="${usuario.tipo =='ADMIN'}">
-    <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a> |
+    <c:if test="${usuario.tipo == 'ADMIN'}">
+        <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a> |
+        <a href="${pageContext.request.contextPath}/emprestimos?action=relatorios">📊 Relatórios</a> |
     </c:if>
 
-    <a href="${pageContext.request.contextPath}/logout">Sair</a> |
+    <a href="${pageContext.request.contextPath}/logout">Sair</a>
 </nav>
 <hr>
 

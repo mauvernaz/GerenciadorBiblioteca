@@ -27,13 +27,14 @@
 <nav>
     <a href="${pageContext.request.contextPath}/livros">📚 Livros</a> |
     <b>📖 Empréstimos</b> |
-
     <c:if test="${usuario.tipo == 'ADMIN'}">
         <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a> |
+        <a href="${pageContext.request.contextPath}/emprestimos?action=relatorios">📊 Relatórios</a> |
     </c:if>
 
     <a href="${pageContext.request.contextPath}/logout">Sair</a>
 </nav>
+
 <hr/>
 
 <c:if test="${not empty mensagemSucesso}">
@@ -44,9 +45,6 @@
     <p class="msg-erro">${mensagemErro}</p>
 </c:if>
 
-<!-- =========================
-           EMPRÉSTIMO
-     ========================= -->
 <c:if test="${usuario.tipo == 'ADMIN'}">
     <h2>Novo Empréstimo</h2>
     <form action="${pageContext.request.contextPath}/emprestimos" method="post">
@@ -76,9 +74,6 @@
     <hr/>
 </c:if>
 
-<!-- =========================
-     EMPRÉSTIMOS EM ABERTO
-     ========================= -->
 <h2>Empréstimos em Aberto</h2>
 
 <c:if test="${empty emprestimosAbertos}">
@@ -104,7 +99,7 @@
                 <td>${e.usuario.nome}</td>
                 <td>${e.livro.titulo}</td>
                 <td>${e.dataEmprestimo}</td>
-                <td>${e.dataPrevista}</td>
+                <td>${e.dataDevolucaoPrevista}</td>
                 <td>${e.diasAtraso}</td>
                 <td>
                     <c:choose>
@@ -117,7 +112,6 @@
                     </c:choose>
                 </td>
                 <td>
-                    <!-- Registrar devolução -->
                     <form class="inline" action="${pageContext.request.contextPath}/emprestimos" method="post">
                         <input type="hidden" name="action" value="devolver"/>
                         <input type="hidden" name="emprestimoId" value="${e.id}"/>
@@ -132,9 +126,6 @@
 
 <hr/>
 
-<!-- =========================
-           HISTÓRICO
-     ========================= -->
 <h2>Histórico de Empréstimos</h2>
 
 <form action="${pageContext.request.contextPath}/emprestimos" method="get">
@@ -189,7 +180,7 @@
                 <td>${e.usuario.nome}</td>
                 <td>${e.livro.titulo}</td>
                 <td>${e.dataEmprestimo}</td>
-                <td>${e.dataPrevista}</td>
+                <td>${e.dataDevolucaoPrevista}</td>
                 <td>${e.dataDevolucaoReal}</td>
                 <td>${e.diasAtraso}</td>
                 <td>R$ ${e.multa}</td>
@@ -207,7 +198,5 @@
         </c:forEach>
         </tbody>
     </table>
-</c:if>
-
-</body>
+</c:if> </body>
 </html>
