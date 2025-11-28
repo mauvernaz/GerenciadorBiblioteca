@@ -6,9 +6,10 @@ import pro.facul.gerenciadorbiblioteca.model.Usuario;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmprestimoDAO {
 
@@ -28,7 +29,7 @@ public class EmprestimoDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar usuários para seleção: " + e.getMessage(), e);
+            throw new RuntimeException("Erro ao listar usuários: " + e.getMessage(), e);
         }
         return lista;
     }
@@ -82,13 +83,7 @@ public class EmprestimoDAO {
             conn.commit();
 
         } catch (SQLException e) {
-            try {
-                if (conn != null) {
-                    conn.rollback();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            try { if (conn != null) conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             throw new RuntimeException("Erro ao realizar empréstimo: " + e.getMessage(), e);
         } finally {
             try { if (stmtInsert != null) stmtInsert.close(); } catch (SQLException e) {}
@@ -101,14 +96,7 @@ public class EmprestimoDAO {
         String sqlUpdateEmprestimo = "UPDATE Emprestimo SET data_devolucao_real = ?, status = ?, multa = ? WHERE id = ?";
         String sqlUpdateLivro = "UPDATE Livro SET quantidade_disponivel = quantidade_disponivel + 1 WHERE id = ?";
 
-        LocalDate dataPrevista = emprestimo.getDataDevolucaoPrevista();
-        LocalDate dataReal = LocalDate.now();
-        long diasAtraso = ChronoUnit.DAYS.between(dataPrevista, dataReal);
-        double valorMulta = 0.0;
-
-        if (diasAtraso > 0) {
-            valorMulta = diasAtraso * 2.0;
-        }
+        emprestimo.registrarDevolucao();
 
         Connection conn = null;
         PreparedStatement stmtEmprestimo = null;
@@ -117,11 +105,10 @@ public class EmprestimoDAO {
         try {
             conn = ConectorBD.getConnection();
             conn.setAutoCommit(false);
-
             stmtEmprestimo = conn.prepareStatement(sqlUpdateEmprestimo);
-            stmtEmprestimo.setDate(1, Date.valueOf(dataReal));
-            stmtEmprestimo.setString(2, "DEVOLVIDO");
-            stmtEmprestimo.setDouble(3, valorMulta);
+            stmtEmprestimo.setDate(1, Date.valueOf(emprestimo.getDataDevolucaoReal()));
+            stmtEmprestimo.setString(2, emprestimo.getStatus());
+            stmtEmprestimo.setDouble(3, emprestimo.getMulta());
             stmtEmprestimo.setInt(4, emprestimo.getId());
             stmtEmprestimo.executeUpdate();
 
@@ -130,10 +117,6 @@ public class EmprestimoDAO {
             stmtLivro.executeUpdate();
 
             conn.commit();
-
-            emprestimo.setDataDevolucaoReal(dataReal);
-            emprestimo.setMulta(valorMulta);
-            emprestimo.setStatus("DEVOLVIDO");
 
         } catch (SQLException e) {
             try { if (conn != null) conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
@@ -166,6 +149,50 @@ public class EmprestimoDAO {
             throw new RuntimeException("Erro ao listar atrasados: " + e.getMessage(), e);
         }
         return lista;
+    }
+
+    public Map<String, Integer> listarLivrosMaisEmprestados() {
+        Map<String, Integer> resultado = new LinkedHashMap<>();
+        String sql = "SELECT l.titulo, COUNT(e.id) as total " +
+                "FROM Emprestimo e " +
+                "JOIN Livro l ON e.id_livro = l.id " +
+                "GROUP BY l.titulo " +
+                "ORDER BY total DESC LIMIT 10";
+
+        try (Connection conn = ConectorBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                resultado.put(rs.getString("titulo"), rs.getInt("total"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao gerar relatório de livros: " + e.getMessage(), e);
+        }
+        return resultado;
+    }
+
+    public Map<String, Integer> listarUsuariosMaisAtivos() {
+        Map<String, Integer> resultado = new LinkedHashMap<>();
+        String sql = "SELECT u.nome, COUNT(e.id) as total " +
+                "FROM Emprestimo e " +
+                "JOIN Usuario u ON e.id_usuario = u.id " +
+                "GROUP BY u.nome " +
+                "ORDER BY total DESC LIMIT 10";
+
+        try (Connection conn = ConectorBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                resultado.put(rs.getString("nome"), rs.getInt("total"));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao gerar relatório de usuários: " + e.getMessage(), e);
+        }
+        return resultado;
     }
 
     public List<Emprestimo> listarTodosEmAberto() {

@@ -32,6 +32,18 @@ public class EmprestimoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
+        if ("relatorios".equals(action)) {
+
+            request.setAttribute("topLivros", emprestimoDAO.listarLivrosMaisEmprestados());
+
+            request.setAttribute("topUsuarios", emprestimoDAO.listarUsuariosMaisAtivos());
+
+            request.setAttribute("atrasados", emprestimoDAO.listarAtrasados());
+
+            request.getRequestDispatcher("/admin/relatorios.jsp").forward(request, response);
+            return;
+        }
+
         List<Usuario> usuarios = emprestimoDAO.listarTodosUsuarios();
         List<Livro> livrosDisponiveis = emprestimoDAO.listarLivrosDisponiveis();
         List<Livro> todosLivros = livroDAO.listarTodos();

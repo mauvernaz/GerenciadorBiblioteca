@@ -26,6 +26,18 @@ public class Emprestimo {
         this.multa = 0.0;
     }
 
+    public void registrarDevolucao() {
+        this.dataDevolucaoReal = LocalDate.now();
+        this.status = "DEVOLVIDO";
+
+        long dias = getDiasAtraso();
+        if (dias > 0) {
+            this.multa = dias * 2.0;
+        } else {
+            this.multa = 0.0;
+        }
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -51,7 +63,6 @@ public class Emprestimo {
         if ("DEVOLVIDO".equalsIgnoreCase(this.status) || this.dataDevolucaoReal != null) {
             return this.multa;
         }
-
         long dias = getDiasAtraso();
         if (dias > 0) {
             return dias * 2.0;
@@ -60,10 +71,6 @@ public class Emprestimo {
     }
 
     public void setMulta(double multa) { this.multa = multa; }
-
-    public LocalDate getDataPrevista() {
-        return this.dataDevolucaoPrevista;
-    }
 
     public long getDiasAtraso() {
         LocalDate dataFim = (dataDevolucaoReal != null) ? dataDevolucaoReal : LocalDate.now();
