@@ -45,7 +45,7 @@
 </c:if>
 
 <!-- =========================
-     NOVO EMPRÉSTIMO
+           EMPRÉSTIMO
      ========================= -->
 <c:if test="${usuario.tipo == 'ADMIN'}">
     <h2>Novo Empréstimo</h2>
@@ -133,7 +133,7 @@
 <hr/>
 
 <!-- =========================
-     HISTÓRICO / RELATÓRIO SIMPLES
+           HISTÓRICO
      ========================= -->
 <h2>Histórico de Empréstimos</h2>
 
