@@ -20,6 +20,7 @@
 
 <nav>
     <b>📚 Livros</b> |
+    <a href="${pageContext.request.contextPath}/emprestimos">📝 Empréstimos</a> |
 
     <c:if test="${usuario.tipo =='ADMIN'}">
     <a href="${pageContext.request.contextPath}/usuarios">👥 Usuários</a> |
