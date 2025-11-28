@@ -1,6 +1,7 @@
 package pro.facul.gerenciadorbiblioteca.model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Emprestimo {
 
@@ -25,7 +26,6 @@ public class Emprestimo {
         this.multa = 0.0;
     }
 
-
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -47,6 +47,30 @@ public class Emprestimo {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public double getMulta() { return multa; }
+    public double getMulta() {
+        if ("DEVOLVIDO".equalsIgnoreCase(this.status) || this.dataDevolucaoReal != null) {
+            return this.multa;
+        }
+
+        long dias = getDiasAtraso();
+        if (dias > 0) {
+            return dias * 2.0;
+        }
+        return 0.0;
+    }
+
     public void setMulta(double multa) { this.multa = multa; }
+
+    public LocalDate getDataPrevista() {
+        return this.dataDevolucaoPrevista;
+    }
+
+    public long getDiasAtraso() {
+        LocalDate dataFim = (dataDevolucaoReal != null) ? dataDevolucaoReal : LocalDate.now();
+
+        if (dataDevolucaoPrevista.isBefore(dataFim)) {
+            return ChronoUnit.DAYS.between(dataDevolucaoPrevista, dataFim);
+        }
+        return 0;
+    }
 }
